@@ -9,10 +9,12 @@ public class Main {
         input = scanner.nextLine();*/
 
         List<String> inputs = new ArrayList<>();
-        inputs.add("A->a");
-        inputs.add("B->b");
+        inputs.add("A->BC");
+        inputs.add("B->d");
         inputs.add("C->c");
 
-        parser.first(inputs);
+        parser.preparGrammar(inputs);
+        String teste =parser.first("C");
+        System.out.println(teste);
     }
 }
