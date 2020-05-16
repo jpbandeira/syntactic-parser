@@ -9,12 +9,14 @@ public class Main {
         input = scanner.nextLine();*/
 
         List<String> inputs = new ArrayList<>();
-        inputs.add("A->BC");
-        inputs.add("B->d");
+        inputs.add("A->BC");   // A -> BC ; A -> b | & C : A -> b | C ; A -> b | c
+        inputs.add("B->bB|&");
         inputs.add("C->c");
 
+        String input = "A";
+
         parser.preparGrammar(inputs);
-        String teste =parser.first("C");
-        System.out.println(teste);
+        String teste = parser.first(input);
+        System.out.println("Primeiro de " + input + " = [" + teste + "] ");
     }
 }
