@@ -1,0 +1,13 @@
+verifica se é variavel e pega o primeiro daquela variavel, até não achar mais nenhuma variável e ter todos os primeiros.
+Na avalizao de cada variavel verificar se tem entrada do epsilon e pegar o primeiro da proxima variavel da expresão principal
+
+- V é um conjunto de variaveis
+- T é um conjunto de simbolos terminais
+- P é um conjunto de regras
+
+X = VARIAVEL
+a = SIMBOLO TERMINAL
+
+Se o valor a é um simbolo terminal, então o primeiro
+X é a.
+

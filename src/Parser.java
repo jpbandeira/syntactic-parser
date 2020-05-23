@@ -10,24 +10,23 @@ public class Parser implements ParserInterface {
     String primeiroValorVariavel = "";
 
     @Override
-    public String first(Grammar grammar) {d
+    public String first(String grammar) {
         StringBuffer firsts = new StringBuffer();
 
         char[] derivacao = new char[0];
         for(Grammar value: this.finalValuesGrammars) {
-            if (value.getVariable().equals(grammar.getVariable())) {
+            if (value.getVariable().equals(grammar)) {
                 derivacao = value.getDerivations().toCharArray();
 
                 if (String.valueOf(derivacao[0]).toUpperCase().equals(String.valueOf(derivacao[0]))) {
                     String primeiroDerivacao = String.valueOf(derivacao[0]);
-                    this.first(primeiroDerivacao);
-                    return primeiroValorVariavel;
+                    return this.first(primeiroDerivacao);
                 }else{
                     primeiroValorVariavel = String.valueOf(derivacao[0]);
                 }
             }
         }
-
+        this.showValuesGrammar(finalValuesGrammars);
         return primeiroValorVariavel;
     }
 
