@@ -13,8 +13,15 @@ public class Main {
         inputs.add("B->d");
         inputs.add("C->c");
 
-        parser.preparGrammar(inputs);
-        String teste =parser.first("C");
-        System.out.println(teste);
+        String input = "A->BC;B->d;C->c;";
+
+        List<Grammar> grammars = parser.preparGrammar(input);
+
+        parser.showValuesGrammar(grammars);
+        
+        for(Grammar value:grammars){
+            String teste =parser.first(value.getVariable());
+            System.out.println("Primeiro de " + value.getVariable() + " = " + teste);
+        }
     }
 }

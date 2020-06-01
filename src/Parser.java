@@ -26,7 +26,7 @@ public class Parser implements ParserInterface {
                 }
             }
         }
-        this.showValuesGrammar(finalValuesGrammars);
+        //this.showValuesGrammar(finalValuesGrammars);
         return primeiroValorVariavel;
     }
 
@@ -36,10 +36,12 @@ public class Parser implements ParserInterface {
     }
 
     @Override
-    public List<Grammar> preparGrammar(List<String> grammars){
+    public List<Grammar> preparGrammar(String grammars){
         List<Grammar> finalValuesGrammars = new ArrayList<>();
 
-        for(String value:grammars) {
+        String[] splitedFromSemicolon = grammars.split(";");
+
+        for(String value:splitedFromSemicolon) {
             Grammar grammar = new Grammar();
             StringBuffer toConcat = new StringBuffer();
 
@@ -60,7 +62,7 @@ public class Parser implements ParserInterface {
         return this.finalValuesGrammars = finalValuesGrammars;
     }
 
-    private void showValuesGrammar(List<Grammar> grammars){
+    public void showValuesGrammar(List<Grammar> grammars){
         for(Grammar value:grammars){
             if(!value.equals("")){
                 System.out.println("Variavel |" + " \tDerivações" + "\n" + value.getVariable() + "\t\t |\t\t" + value.getDerivations());
