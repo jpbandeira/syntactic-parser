@@ -26,11 +26,7 @@ public class Parser implements ParserInterface {
                     return this.first(firstValue);
                 } else {
                     if(containBar(grammar.getDerivations())){
-                        derivationToCharArray = grammar.getDerivations().toCharArray();
-                        int positionBar = grammar.getDerivations().indexOf("|");
-                        String valueAfterBar = String.valueOf(derivationToCharArray[positionBar + 1]);
-                        String firstValue = String.valueOf(derivationToCharArray[0]);
-                        String finalValue = firstValue + valueAfterBar;
+                        String finalValue = this.getfirstWithBar(finalValuesGrammars ,grammar);
                         firstValueDerivationCharArry = finalValue.toCharArray();
                     }else{
                         derivationToCharArray = grammar.getDerivations().toCharArray();
@@ -98,5 +94,61 @@ public class Parser implements ParserInterface {
 
     private boolean containBar(String derivation){
         return derivation.contains("|") ? true : false;
+    }
+
+    private String getfirstWithBar(List<Grammar> finalValuesGrammars ,Grammar grammar){
+        char[] charArryfirstsProxValue = new char[0];
+        char[] charArryFirstsTopValue;
+
+        String firstValue = "";
+        String finalValue = "";
+        char[] derivationToCharArray = grammar.getDerivations().toCharArray();
+        Grammar valuetopGrammar = finalValuesGrammars.get(0);
+
+        int positionBar = grammar.getDerivations().indexOf("|");
+        String valueAfterBar = String.valueOf(derivationToCharArray[positionBar + 1]);
+        StringBuilder firstValueToProxGrammar = new StringBuilder();
+
+        char[] derivationValue = valuetopGrammar.getDerivations().toCharArray();
+        int positionFirstValue = 0;
+
+        String valueAfterFirstValueDerivation = String.valueOf(derivationValue[positionFirstValue + 1]);
+        String variableTopValue = String.valueOf(derivationValue[0]);
+
+        Grammar grammarTopValue = this.findGrammar(variableTopValue);
+
+        if(valueAfterBar.equals("0") && grammar.isAnalyzeEpsilonOrNot() == true){
+            for(int i = 0; i < finalValuesGrammars.size(); i++){
+                if(finalValuesGrammars.get(i).getVariable().equals(valueAfterFirstValueDerivation)){
+                    grammar.setAnalyzeEpsilonOrNot(false);
+                    charArryfirstsProxValue = this.first(valueAfterFirstValueDerivation);
+                }
+            }
+
+            for(char value:charArryfirstsProxValue){
+                firstValueToProxGrammar.append(value);
+            }
+
+            charArryFirstsTopValue = grammarTopValue.getDerivations().toCharArray();
+            String FirstsTopValue = String.valueOf(charArryFirstsTopValue[0]);
+
+            finalValue = FirstsTopValue + firstValueToProxGrammar.toString();
+
+        }else {
+            charArryFirstsTopValue = this.first(String.valueOf(derivationToCharArray[0]));
+            finalValue = charArryFirstsTopValue.toString() + valueAfterBar;
+        }
+
+        return finalValue;
+    }
+
+    private Grammar findGrammar(String variable){
+        for(Grammar value:finalValuesGrammars){
+            if (variable.equals(value.getVariable())){
+                return value;
+            }
+        }
+
+        return null;
     }
 }

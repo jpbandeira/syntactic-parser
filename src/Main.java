@@ -19,9 +19,9 @@ public class Main {
         inputs.add("B->d");
         inputs.add("C->c");
 
-        String input =  "A->BC;" +
-                        "B->dB|0;" +
-                        "C->0;";
+        String input = "E -> T;" +
+                "T -> F|b;" +
+                "F -> a;";
         //String input = "A->BC;B->dB|0;C->c|0;";
 
         List<Grammar> grammars = parser.preparGrammar(input);

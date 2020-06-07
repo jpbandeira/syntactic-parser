@@ -5,7 +5,7 @@ public class Grammar {
     private String variable;
     private String derivations;
     private boolean containsEpsilon;
-    private int positionBar;
+    private boolean analyzeEpsilonOrNot = true;
 
     public Grammar() {}
 
@@ -39,11 +39,11 @@ public class Grammar {
         this.containsEpsilon = containsEpsilon;
     }
 
-    public int getPositionBar() {
-        return positionBar;
+    public boolean isAnalyzeEpsilonOrNot() {
+        return analyzeEpsilonOrNot;
     }
 
-    public void setPositionBar(int positionBar) {
-        this.positionBar = positionBar;
+    public void setAnalyzeEpsilonOrNot(boolean analyzeEpsilonOrNot) {
+        this.analyzeEpsilonOrNot = analyzeEpsilonOrNot;
     }
 }
