@@ -1,22 +1,29 @@
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Parser parser = new Parser();
-        /*Scanner scanner = new Scanner(System.in);
-        input = scanner.nextLine();*/
+        char[] derivacoes;
+        char[] folow;
 
-        List<String> inputs = new ArrayList<>();
-        inputs.add("A->BC");   // A -> BC ; A -> b | & C : A -> b | C ; A -> b | c
-        inputs.add("B->bB|&");
-        inputs.add("C->c");
+        String input = "S -> ABCDE;" +
+                "A -> a | 0;" +
+                "B -> b | 0;" +
+                "C -> c;" +
+                "D -> d | 0;" +
+                "E -> e | 0;";
 
-        String input = "A";
+        List<Grammar> grammar = parser.preparGrammar(input);
+        parser.showValuesGrammar(grammar);
 
-        parser.preparGrammar(inputs);
-        String teste = parser.first(input);
-        System.out.println("Primeiro de " + input + " = [" + teste + "] ");
+        String variable = "S";
+
+        derivacoes = parser.first(variable);
+        System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(derivacoes));
+
+        folow = parser.folow(variable);
+        System.out.println("\nFolow de " + variable + " = " + Arrays.toString(folow));
     }
 }
