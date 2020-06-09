@@ -30,7 +30,7 @@ public class Main {
         List<Grammar> grammar = parser.preparGrammar(input4);
         parser.showValuesGrammar(grammar);
 
-        String variable = "S";
+        String variable = "C";
 
         derivacoes = parser.first(variable);
         System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(derivacoes));

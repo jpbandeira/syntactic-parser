@@ -78,6 +78,7 @@ public class Parser{
         String derivationsTopGrammar = topGrammar.getDerivations();
         char[] derivationsTopGrammarCharArray = topGrammar.getDerivations().toCharArray();
         String folow = "";
+        char[] folows;
 
         if(variable.equals("S")){
             folow = "$";
@@ -86,12 +87,13 @@ public class Parser{
 
         int positionVariable = derivationsTopGrammar.indexOf(variable);
 
+        if(this.isUpperCase(String.valueOf(derivationsTopGrammarCharArray[positionVariable + 1]))){
+            folows = this.first(String.valueOf(derivationsTopGrammarCharArray[positionVariable + 1]));
+        }else{
+            folows = String.valueOf(derivationsTopGrammarCharArray[positionVariable + 1]).toCharArray();
+        }
 
-        char[] firsts = this.first(String.valueOf(derivationsTopGrammarCharArray[positionVariable + 1]));
-
-
-
-        return firsts;
+        return folows;
     }
 
     public List<Grammar> preparGrammar(String grammars){
