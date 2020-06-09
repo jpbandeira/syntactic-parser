@@ -1,50 +1,79 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Parser implements ParserInterface {
+public class Parser{
 
     List<Grammar> finalValuesGrammars = new ArrayList<>();
-    String firstValueDerivation = "";
+    List<Grammar> grammarsAnalised = new ArrayList<>();
+    StringBuffer firsts = new StringBuffer();
+    char[] firstToProxVariable;
+
     char[] firstValueDerivationCharArry = new char[0];
+    private static int positionCharactere = 0;
 
-    @Override
     public char[] first(String variable) {
-        StringBuffer firsts = new StringBuffer();
-        char[] derivacao = new char[0];
-        int count = 0;
         Grammar grammar = new Grammar();
+        char[] derivacao = new char[0];
         char[] derivationToCharArray = new char[0];
+        int count = 0;
 
-        for(int i = 0; i < this.finalValuesGrammars.size(); i++) {
-            grammar = this.finalValuesGrammars.get(i);
-            if (variable.equals(grammar.getVariable())) {
-                String first = String.valueOf(grammar.getDerivations().charAt(0));
-                if (isUpperCase(grammar.getDerivations()) && first.matches("[A-Z]")) {
-                    derivationToCharArray = grammar.getDerivations().toCharArray();
-                    String firstValue = String.valueOf(derivationToCharArray[0]);
-                    return this.first(firstValue);
-                } else {
-                    if(containBar(grammar.getDerivations())){
-                        String finalValue = this.getfirstWithBar(finalValuesGrammars ,grammar);
-                        firstValueDerivationCharArry = finalValue.toCharArray();
-                    }else{
-                        derivationToCharArray = grammar.getDerivations().toCharArray();
-                        String firstValue = String.valueOf(derivationToCharArray[0]);
-                        firstValueDerivationCharArry = firstValue.toCharArray();
-                    }
+        grammar = this.findGrammar(variable);
+        grammarsAnalised.add(grammar);
+
+        if(!this.containsEpsilon(grammar.getDerivations())){
+            String first = this.getFirstVariable(grammar.getDerivations());
+
+            if(this.isUpperCase(first)) this.first(first);
+            else return firsts.append(first).toString().toCharArray();
+        }else{
+            Grammar value = this.findGrammarAnalised(grammar);
+
+            char[] firstToVariable = this.getFirstVariable(grammar.getDerivations()).toCharArray();
+            String replaced =  this.replaced(firstToVariable);
+
+            if(value != null) {
+                firsts.append(replaced);
+                int positionVariable = value.getDerivations().indexOf(grammar.getVariable());
+                char[] derivations = value.getDerivations().toCharArray();
+
+                if (this.isUpperCase(String.valueOf(derivations[positionVariable + 1]))) {
+                    firstToProxVariable = this.first(String.valueOf(derivations[positionVariable + 1]));
+                    //firsts.append(firstToProxVariable);
                 }
+            }else{
+                firsts.append(this.getFirstWithBar(grammar));
             }
         }
-        return firstValueDerivationCharArry;
+
+        return firstValueDerivationCharArry = firsts.toString().toCharArray();
     }
 
-    @Override
-    public void folow(String grammar) {
-        //This method is not implemented yet
+    public char[] folow(String variable) {
+
+        firsts = new StringBuffer();
+
+        Grammar topGrammar = findGrammar("S");
+        String derivationsTopGrammar = topGrammar.getDerivations();
+        char[] derivationsTopGrammarCharArray = topGrammar.getDerivations().toCharArray();
+        String folow = "";
+
+        if(variable.equals("S")){
+            folow = "$";
+            return folow.toCharArray();
+        }
+
+        int positionVariable = derivationsTopGrammar.indexOf(variable);
+
+
+        char[] firsts = this.first(String.valueOf(derivationsTopGrammarCharArray[positionVariable + 1]));
+
+
+
+        return firsts;
     }
 
-    @Override
     public List<Grammar> preparGrammar(String grammars){
         List<Grammar> finalValuesGrammars = new ArrayList<>();
 
@@ -59,10 +88,6 @@ public class Parser implements ParserInterface {
 
             for (int i = 1; i < splited.length; i++) {
                 if (!splited[i].equals("")) toConcat.append(splited[i]);
-            }
-
-            if(toConcat.toString().contains("0")){
-                grammar.setContainsEpsilon(true);
             }
 
             grammar.setDerivations(toConcat.toString());
@@ -85,7 +110,7 @@ public class Parser implements ParserInterface {
         derivations = derivation.toCharArray();
 
         String first = String.valueOf(derivations[0]);
-        if(first.toUpperCase().equals(first)){
+        if(first.toUpperCase().equals(first) && first.matches("[A-Z]")){
             return true;
         }else{
             return false;
@@ -96,48 +121,24 @@ public class Parser implements ParserInterface {
         return derivation.contains("|") ? true : false;
     }
 
-    private String getfirstWithBar(List<Grammar> finalValuesGrammars ,Grammar grammar){
-        char[] charArryfirstsProxValue = new char[0];
+    private String getFirstWithBar(Grammar grammar){
         char[] charArryFirstsTopValue;
-
-        String firstValue = "";
         String finalValue = "";
         char[] derivationToCharArray = grammar.getDerivations().toCharArray();
-        Grammar valuetopGrammar = finalValuesGrammars.get(0);
-
         int positionBar = grammar.getDerivations().indexOf("|");
         String valueAfterBar = String.valueOf(derivationToCharArray[positionBar + 1]);
-        StringBuilder firstValueToProxGrammar = new StringBuilder();
 
-        char[] derivationValue = valuetopGrammar.getDerivations().toCharArray();
-        int positionFirstValue = 0;
-
-        String valueAfterFirstValueDerivation = String.valueOf(derivationValue[positionFirstValue + 1]);
-        String variableTopValue = String.valueOf(derivationValue[0]);
-
-        Grammar grammarTopValue = this.findGrammar(variableTopValue);
-
-        if(valueAfterBar.equals("0") && grammar.isAnalyzeEpsilonOrNot() == true){
-            for(int i = 0; i < finalValuesGrammars.size(); i++){
-                if(finalValuesGrammars.get(i).getVariable().equals(valueAfterFirstValueDerivation)){
-                    grammar.setAnalyzeEpsilonOrNot(false);
-                    charArryfirstsProxValue = this.first(valueAfterFirstValueDerivation);
-                }
-            }
-
-            for(char value:charArryfirstsProxValue){
-                firstValueToProxGrammar.append(value);
-            }
-
-            charArryFirstsTopValue = grammarTopValue.getDerivations().toCharArray();
-            String FirstsTopValue = String.valueOf(charArryFirstsTopValue[0]);
-
-            finalValue = FirstsTopValue + firstValueToProxGrammar.toString();
-
-        }else {
+        if(isUpperCase(String.valueOf(derivationToCharArray[0]))){
             charArryFirstsTopValue = this.first(String.valueOf(derivationToCharArray[0]));
-            finalValue = charArryFirstsTopValue.toString() + valueAfterBar;
+        }else{
+            charArryFirstsTopValue = String.valueOf(derivationToCharArray[0]).toCharArray();
         }
+
+        finalValue = Arrays.toString(charArryFirstsTopValue)
+                .replace("[","")
+                .replace("]","")
+                .replace(",","")
+                + valueAfterBar;
 
         return finalValue;
     }
@@ -151,4 +152,112 @@ public class Parser implements ParserInterface {
 
         return null;
     }
+
+    private char[] getFirstWithEpsilon(String variable ,String firstsParam){
+        String thisFirst = firstsParam;
+        String firstReplaced = "";
+
+        Grammar startGrammar = finalValuesGrammars.get(0);
+
+        String derivationStartGramar = startGrammar.getDerivations();
+
+        int positionCharacter = derivationStartGramar.indexOf(variable);
+
+        char[] derivationStartGramarCharArray = derivationStartGramar.toCharArray();
+
+        char proxVariable = derivationStartGramarCharArray[positionCharacter+1];
+
+        if(isUpperCase(String.valueOf(proxVariable))){
+            firstReplaced = thisFirst.replace("0", Arrays.toString(this.first(String.valueOf(proxVariable))));
+
+            firstReplaced = firstReplaced
+                    .replace("[","")
+                    .replace("]","")
+                    .replace(",","");
+        }
+
+            /*String variableActual = String.valueOf(derivationStartGramar[this.positionCharactere]);
+            this.positionCharactere++;
+            String variableAfterVariableActual = String.valueOf(derivationStartGramar[this.positionCharactere]);
+
+            Grammar grammarTopValue = this.findGrammar(variableActual);
+
+            for(int i = 0; i < finalValuesGrammars.size(); i++){
+                if(finalValuesGrammars.get(i).getVariable().equals(valueAfterVariableActual)){
+                    charArryfirstsProxValue = this.first(valueAfterVariableActual);
+                }
+            }
+
+            for(char value:charArryfirstsProxValue){
+                firstValueToProxGrammar.append(value);
+            }
+
+            charArryFirstsTopValue = grammarTopValue.getDerivations().toCharArray();
+            String FirstsTopValue = String.valueOf(charArryFirstsTopValue[0]);
+
+            finalValue = FirstsTopValue + firstValueToProxGrammar.toString();*/
+
+        return firstReplaced.toCharArray();
+    }
+
+    private boolean containsUpperCase(String derivarion){
+        char[] derivations = derivarion.toCharArray();
+        int contador = 0;
+
+        for(char value:derivations){
+            String valueString = String.valueOf(value);
+            if(valueString.toUpperCase().equals(valueString) && valueString.matches("[A-Z]")){
+                contador++;
+            }
+        }
+
+        if (contador > 0){
+            return true;
+        }
+
+        return false;
+
+    }
+
+    private String getFirstVariable(String derivation){
+        char[] derivations = derivation.toCharArray();
+
+        return String.valueOf(derivations[0]);
+    }
+
+    private boolean conteinsVariable(String variable, String derivation){
+        if(derivation.contains(variable)){
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean containsEpsilon(String derivation){
+        if(derivation.contains("0")) return true;
+
+        return false;
+    }
+
+    private String replaced(char[] chars){
+        return Arrays.toString(chars)
+                .replace("[","")
+                .replace("]","")
+                .replace(",","");
+    }
+
+    private Grammar findGrammarAnalised(Grammar grammar) {
+
+        for (Grammar value : grammarsAnalised) {
+
+            if (value.getVariable() != grammar.getVariable() && this.containsUpperCase(value.getDerivations())) {
+                if (this.conteinsVariable(grammar.getVariable(), value.getDerivations())) {
+                    return value;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

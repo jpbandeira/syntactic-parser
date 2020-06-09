@@ -1,45 +1,29 @@
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
-
-    char[] teste = new char[0];
-
     public static void main(String[] args) {
         Parser parser = new Parser();
+        char[] derivacoes;
+        char[] folow;
 
-        char[] teste = new char[0];
-        /*Scanner scanner = new Scanner(System.in);
-        input = scanner.nextLine();*/
+        String input = "S -> ABCDE;" +
+                "A -> a | 0;" +
+                "B -> b | 0;" +
+                "C -> c;" +
+                "D -> d | 0;" +
+                "E -> e | 0;";
 
-        List<String> inputs = new ArrayList<>();
-        inputs.add("A->BC");
-        inputs.add("B->d");
-        inputs.add("C->c");
+        List<Grammar> grammar = parser.preparGrammar(input);
+        parser.showValuesGrammar(grammar);
 
-        String input = "E -> T;" +
-                "T -> F|b;" +
-                "F -> a;";
-        //String input = "A->BC;B->dB|0;C->c|0;";
+        String variable = "S";
 
-        List<Grammar> grammars = parser.preparGrammar(input);
+        derivacoes = parser.first(variable);
+        System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(derivacoes));
 
-        parser.showValuesGrammar(grammars);
-        
-        for(Grammar value:grammars){
-
-            teste =parser.first(value.getVariable());
-            System.out.println("Primeiro de " + value.getVariable() + " = " + Arrays.toString(teste)
-            + " Contem epsilon = " + value.isContainsEpsilon());
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Main{" +
-                "teste=" + Arrays.toString(teste) +
-                '}';
+        folow = parser.folow(variable);
+        System.out.println("\nFolow de " + variable + " = " + Arrays.toString(folow));
     }
 }

@@ -4,15 +4,13 @@ public class Grammar {
 
     private String variable;
     private String derivations;
-    private boolean containsEpsilon;
     private boolean analyzeEpsilonOrNot = true;
 
     public Grammar() {}
 
-    public Grammar(String variable, String derivations, boolean containsEpsilon) {
+    public Grammar(String variable, String derivations) {
         this.variable = variable;
         this.derivations = derivations;
-        this.containsEpsilon = containsEpsilon;
     }
 
     public String getVariable() {
@@ -31,14 +29,6 @@ public class Grammar {
         this.derivations = derivations;
     }
 
-    public boolean isContainsEpsilon() {
-        return containsEpsilon;
-    }
-
-    public void setContainsEpsilon(boolean containsEpsilon) {
-        this.containsEpsilon = containsEpsilon;
-    }
-
     public boolean isAnalyzeEpsilonOrNot() {
         return analyzeEpsilonOrNot;
     }
@@ -46,4 +36,5 @@ public class Grammar {
     public void setAnalyzeEpsilonOrNot(boolean analyzeEpsilonOrNot) {
         this.analyzeEpsilonOrNot = analyzeEpsilonOrNot;
     }
+
 }
