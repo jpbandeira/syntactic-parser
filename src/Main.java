@@ -15,7 +15,19 @@ public class Main {
                 "D -> d | 0;" +
                 "E -> e | 0;";
 
-        List<Grammar> grammar = parser.preparGrammar(input);
+        String input2 = "S -> AB;" +
+                "A -> a | 0;" +
+                "B -> b | c;";
+
+        String input3 = "S -> A | B;" +
+                "A -> a;" +
+                "B -> b;";
+
+        String input4 = "S -> Bb | Cd;" +
+                "B -> aB|0;" +
+                "C -> cC|0;";
+
+        List<Grammar> grammar = parser.preparGrammar(input4);
         parser.showValuesGrammar(grammar);
 
         String variable = "S";

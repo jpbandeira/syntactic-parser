@@ -2,6 +2,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser{
 
@@ -23,7 +25,25 @@ public class Parser{
         grammarsAnalised.add(grammar);
 
         if(!this.containsEpsilon(grammar.getDerivations())){
-            String first = this.getFirstVariable(grammar.getDerivations());
+            String first = "";
+
+            if(this.containBar(grammar.getDerivations())){
+                first = this.getFirstWithBar(grammar);
+            }else {
+                first = this.getFirstVariable(grammar.getDerivations());
+            }
+
+            Pattern pattern = Pattern.compile("[A-Z]");
+            Matcher matcher = pattern.matcher(first);
+
+            if(matcher.find()){
+                if (this.isUpperCase(matcher.group())){
+                    char[] c = this.first(matcher.group());
+                    //String replaced = this.replaced(c);
+                    //firsts.append(replaced);
+                    return firsts.toString().toCharArray();
+                }
+            }
 
             if(this.isUpperCase(first)) this.first(first);
             else return firsts.append(first).toString().toCharArray();
