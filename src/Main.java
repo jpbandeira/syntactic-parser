@@ -5,7 +5,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Parser parser = new Parser();
-        char[] derivacoes;
+        char[] firsts = new char[0];
         char[] folow;
 
         String input = "S -> ABCDE;" +
@@ -27,15 +27,20 @@ public class Main {
                 "B -> aB|0;" +
                 "C -> cC|0;";
 
+        String input5 = "S -> cAa;" +
+                "        A -> cB | B;" +
+                "        B -> bcB | 0;";
+
         List<Grammar> grammar = parser.preparGrammar(input4);
         parser.showValuesGrammar(grammar);
 
         String variable = "C";
 
-        derivacoes = parser.first(variable);
-        System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(derivacoes));
+        firsts = parser.first(variable);
+        System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(firsts));
 
         folow = parser.folow(variable);
         System.out.println("\nFolow de " + variable + " = " + Arrays.toString(folow));
     }
+
 }
