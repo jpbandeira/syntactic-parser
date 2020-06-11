@@ -16,10 +16,7 @@ public class Parser{
     private static int positionCharactere = 0;
 
     public char[] first(String variable) {
-        Grammar grammar = new Grammar();
-        char[] derivacao = new char[0];
-        char[] derivationToCharArray = new char[0];
-        int count = 0;
+        Grammar grammar;
         Pattern pattern = Pattern.compile("[A-Z]");
         Matcher matcher;
 
@@ -234,53 +231,6 @@ public class Parser{
         }
 
         return null;
-    }
-
-    private char[] getFirstWithEpsilon(String variable ,String firstsParam){
-        String thisFirst = firstsParam;
-        String firstReplaced = "";
-
-        Grammar startGrammar = finalValuesGrammars.get(0);
-
-        String derivationStartGramar = startGrammar.getDerivations();
-
-        int positionCharacter = derivationStartGramar.indexOf(variable);
-
-        char[] derivationStartGramarCharArray = derivationStartGramar.toCharArray();
-
-        char proxVariable = derivationStartGramarCharArray[positionCharacter+1];
-
-        if(isUpperCase(String.valueOf(proxVariable))){
-            firstReplaced = thisFirst.replace("0", Arrays.toString(this.first(String.valueOf(proxVariable))));
-
-            firstReplaced = firstReplaced
-                    .replace("[","")
-                    .replace("]","")
-                    .replace(",","");
-        }
-
-            /*String variableActual = String.valueOf(derivationStartGramar[this.positionCharactere]);
-            this.positionCharactere++;
-            String variableAfterVariableActual = String.valueOf(derivationStartGramar[this.positionCharactere]);
-
-            Grammar grammarTopValue = this.findGrammar(variableActual);
-
-            for(int i = 0; i < finalValuesGrammars.size(); i++){
-                if(finalValuesGrammars.get(i).getVariable().equals(valueAfterVariableActual)){
-                    charArryfirstsProxValue = this.first(valueAfterVariableActual);
-                }
-            }
-
-            for(char value:charArryfirstsProxValue){
-                firstValueToProxGrammar.append(value);
-            }
-
-            charArryFirstsTopValue = grammarTopValue.getDerivations().toCharArray();
-            String FirstsTopValue = String.valueOf(charArryFirstsTopValue[0]);
-
-            finalValue = FirstsTopValue + firstValueToProxGrammar.toString();*/
-
-        return firstReplaced.toCharArray();
     }
 
     private boolean containsUpperCase(String derivarion){
