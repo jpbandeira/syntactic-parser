@@ -1,6 +1,7 @@
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,33 +9,32 @@ public class Main {
         char[] firsts = new char[0];
         char[] folow;
 
-        String input = "S -> ABCDE;" +
-                "A -> a | 0;" +
-                "B -> b | 0;" +
-                "C -> c;" +
-                "D -> d | 0;" +
-                "E -> e | 0;";
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
 
-        String input2 = "S -> AB;" +
-                "A -> a | 0;" +
-                "B -> b | c;";
+        System.out.println("Digite a gramatica: ");
+        input = scanner.nextLine();
 
-        String input3 = "S -> A | B;" +
-                "A -> a;" +
-                "B -> b;";
+        List<Grammar> grammar = parser.preparGrammar(input);
 
-        String input4 = "S -> Bb | Cd;" +
-                "B -> aB|0;" +
-                "C -> cC|0;";
+        System.out.println("\n**** Gramática Gerada ****\n");
 
-        String input5 = "S -> cAa;" +
-                "        A -> cB | B;" +
-                "        B -> bcB | 0;";
-
-        List<Grammar> grammar = parser.preparGrammar(input4);
         parser.showValuesGrammar(grammar);
 
-        String variable = "C";
+        System.out.println("\n**** Tabela Preditiva ****\n");
+
+        for(Grammar value:grammar) {
+            parser.generatePredictiveTable(value);
+        }
+
+        parser.showPredictiveTable();
+
+        String variable;
+
+        System.out.println("Digite a variavel para testar FIRST e FOLOW: ");
+        variable = scanner.nextLine();
+
+        parser.firsts = new StringBuffer();
 
         firsts = parser.first(variable);
         System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(firsts));

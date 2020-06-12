@@ -1,4 +1,5 @@
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,8 +9,11 @@ import java.util.regex.Pattern;
 public class Parser{
 
     private List<Grammar> finalValuesGrammars = new ArrayList<>();
+    private List<PredictiveTable> predictiveTables = new ArrayList<>();
+    private List<String> terminalSymbols = new ArrayList<>();
+    private List<String> variables = new ArrayList<>();
     private List<Grammar> grammarsAnalised = new ArrayList<>();
-    private StringBuffer firsts = new StringBuffer();
+    public StringBuffer firsts = new StringBuffer();
     private char[] firstToProxVariable;
 
     private char[] firstValueDerivationCharArry = new char[0];
@@ -97,15 +101,17 @@ public class Parser{
                 int positionVariable = value.getDerivations().indexOf(grammar.getVariable());
                 char[] derivations = value.getDerivations().toCharArray();
 
-                if (this.isUpperCase(String.valueOf(derivations[positionVariable + 1]))) {
-                    firstToProxVariable = this.first(String.valueOf(derivations[positionVariable + 1]));
+                if(positionVariable + 1 != derivations.length) {
+                    if (this.isUpperCase(String.valueOf(derivations[positionVariable + 1]))) {
+                        firstToProxVariable = this.first(String.valueOf(derivations[positionVariable + 1]));
+                    }
                 }
             }else{
                 firsts.append(this.getFirstWithBar(grammar));
             }
         }
-
-        return firstValueDerivationCharArry = firsts.toString().toCharArray();
+        firstValueDerivationCharArry = firsts.toString().toCharArray();
+        return firstValueDerivationCharArry;
     }
 
     public char[] folow(String variable) {
@@ -154,6 +160,66 @@ public class Parser{
         return folows;
     }
 
+    public void generatePredictiveTable(Grammar grammar){
+        PredictiveTable predictiveTable;
+
+        char[] firsts = this.first(grammar.getVariable());
+        char[] folows = this.folow(grammar.getVariable());
+        String firstsToString =  String.valueOf(firsts);
+        String folowToString =  String.valueOf(folows);
+
+        int positionEpsilon = firstsToString.indexOf("0");
+
+        String firstWithEpsilon = "";
+        if(positionEpsilon != -1){
+            firstWithEpsilon = String.valueOf(firsts[positionEpsilon]);
+        }
+        String firstWithoutEpsilon = firstsToString.replaceAll("0|\\s*", "");
+
+        if(firstWithoutEpsilon.matches("[a-z]+")){
+            for(String value:terminalSymbols){
+                for(int i = 0; i < firsts.length; i++) {
+                    if (value.equals(String.valueOf(firsts[i]))) {
+                        predictiveTable = new PredictiveTable();
+
+                        predictiveTable.setVariable(grammar.getVariable());
+                        predictiveTable.setTerminalSymbol(value);
+                        predictiveTable.setProducion(grammar.getDerivations());
+
+                        predictiveTables.add(predictiveTable);
+                    }
+                }
+            }
+        }
+
+        if(firstWithEpsilon.equals("0")) {
+            for (String value : terminalSymbols) {
+                for (int i = 0; i < folows.length; i++) {
+                    if (value.equals(String.valueOf(folows[i]))) {
+                        predictiveTable = new PredictiveTable();
+
+                        predictiveTable.setVariable(grammar.getVariable());
+                        predictiveTable.setTerminalSymbol(value);
+                        predictiveTable.setProducion(grammar.getDerivations());
+
+                        predictiveTables.add(predictiveTable);
+                    }
+                }
+            }
+        }
+
+        if(firstWithEpsilon.equals("0") && folowToString.contains("$")) {
+            predictiveTable = new PredictiveTable();
+
+            predictiveTable.setVariable(grammar.getVariable());
+            predictiveTable.setTerminalSymbol("$");
+            predictiveTable.setProducion(grammar.getDerivations());
+
+            predictiveTables.add(predictiveTable);
+        }
+
+    }
+
     public List<Grammar> preparGrammar(String grammars){
         List<Grammar> finalValuesGrammars = new ArrayList<>();
 
@@ -173,6 +239,27 @@ public class Parser{
             grammar.setDerivations(toConcat.toString());
             finalValuesGrammars.add(grammar);
         }
+
+        Pattern patternTerminalSymbol = Pattern.compile("[a-z]");
+        Pattern patternVariable = Pattern.compile("[A-Z]");
+        Matcher matcherTerminalSymbol;
+        Matcher matcherVariable;
+
+        for(Grammar value:finalValuesGrammars){
+            matcherTerminalSymbol = patternTerminalSymbol.matcher(value.getDerivations());
+            matcherVariable = patternVariable.matcher(value.getVariable());
+
+            while (matcherTerminalSymbol.find()){
+                terminalSymbols.add(matcherTerminalSymbol.group());
+            }
+
+            while (matcherVariable.find()){
+                variables.add(matcherVariable.group());
+            }
+        }
+
+        terminalSymbols.add("$");
+
         return this.finalValuesGrammars = finalValuesGrammars;
     }
 
@@ -184,6 +271,13 @@ public class Parser{
             }
         }
     }
+    public void showPredictiveTable(){
+        for(PredictiveTable value:this.predictiveTables){
+                System.out.println("Variavel |" + " \tSimbolo Terminal |" + " \tProdução" +  "\n" + value.getVariable() + "\t\t |\t\t" + value.getTerminalSymbol() + "\t\t\t |\t\t" + value.getProducion());
+                System.out.println("---------|-------------------|--------------");
+        }
+    }
+
 
     private boolean isUpperCase(String derivation){
         char[] derivations = new char[0];
