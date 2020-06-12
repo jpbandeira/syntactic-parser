@@ -101,8 +101,10 @@ public class Parser{
                 int positionVariable = value.getDerivations().indexOf(grammar.getVariable());
                 char[] derivations = value.getDerivations().toCharArray();
 
-                if (this.isUpperCase(String.valueOf(derivations[positionVariable + 1]))) {
-                    firstToProxVariable = this.first(String.valueOf(derivations[positionVariable + 1]));
+                if(positionVariable + 1 != derivations.length) {
+                    if (this.isUpperCase(String.valueOf(derivations[positionVariable + 1]))) {
+                        firstToProxVariable = this.first(String.valueOf(derivations[positionVariable + 1]));
+                    }
                 }
             }else{
                 firsts.append(this.getFirstWithBar(grammar));
@@ -269,6 +271,13 @@ public class Parser{
             }
         }
     }
+    public void showPredictiveTable(){
+        for(PredictiveTable value:this.predictiveTables){
+                System.out.println("Variavel |" + " \tSimbolo Terminal |" + " \tProdução" +  "\n" + value.getVariable() + "\t\t |\t\t" + value.getTerminalSymbol() + "\t\t\t |\t\t" + value.getProducion());
+                System.out.println("---------|-------------------|--------------");
+        }
+    }
+
 
     private boolean isUpperCase(String derivation){
         char[] derivations = new char[0];
