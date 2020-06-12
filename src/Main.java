@@ -34,7 +34,13 @@ public class Main {
         List<Grammar> grammar = parser.preparGrammar(input4);
         parser.showValuesGrammar(grammar);
 
-        String variable = "C";
+        for(Grammar value:grammar) {
+            parser.generatePredictiveTable(value);
+        }
+
+        String variable = "B";
+
+        parser.firsts = new StringBuffer();
 
         firsts = parser.first(variable);
         System.out.println("\nPrimeiro de " + variable + " = " + Arrays.toString(firsts));
